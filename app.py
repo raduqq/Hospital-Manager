@@ -22,6 +22,17 @@ def get_post(post_id):
         abort(404)
     return post
 
+def get_doctor(doctor_id):
+    conn = get_db_connection()
+    doctor = conn.execute('SELECT * FROM doctors WHERE id = ?',
+                        (doctor_id,)).fetchone()
+    conn.close()
+
+    if doctor is None:
+        abort(404)
+
+    return doctor
+
 @app.route('/')
 def index():
     conn = get_db_connection()
@@ -84,3 +95,67 @@ def delete(id):
     flash('"{}" was successfully deleted!'.format(post['title']))
     return redirect(url_for('index'))
 
+# /doctor/create
+@app.route('/doctors/create/', methods=('GET', 'POST'))
+def create_doctor():
+    if request.method == 'POST':
+        name = request.form['name']
+        # dropdown cu asistenti
+
+        if not name:
+            flash('Name is required!')
+        else:
+            conn = get_db_connection()
+            conn.execute('INSERT INTO doctors (name) VALUES (?)',
+                         (name,))
+            conn.commit()
+            conn.close()
+            return redirect(url_for('index'))
+
+    return render_template('create-doctor.html')
+
+# /doctor/edit
+@app.route('/doctors/edit/<int:id>', methods=('GET', 'POST'))
+def edit_doctor(id):
+    doctor = get_doctor(id)
+
+    if request.method == 'POST':
+        name = request.form['name']
+        # dropdown cu asistenti
+
+        if not name:
+            flash('Name is required!')
+
+        else:
+            conn = get_db_connection()
+            conn.execute('UPDATE doctors SET name = ?'
+                         ' WHERE id = ?',
+                         (name, id))
+            conn.commit()
+            conn.close()
+            return redirect(url_for('index'))
+
+    return render_template('edit-doctor.html', doctor=doctor)
+
+# /doctor/delete
+@app.route('/doctors/delete/<int:id>', methods=('POST',))
+def delete_doctor(id):
+    doctor = get_doctor(id)
+    conn = get_db_connection()
+    conn.execute('DELETE FROM doctors WHERE id = ?', (id,))
+    conn.commit()
+    conn.close()
+    flash('"{}" was successfully deleted!'.format(doctor['name']))
+    return redirect(url_for('index'))
+
+# /assistant/create
+# /assistant/edit
+# /assistant/delete
+
+# /patient/create
+# /patient/edit
+# /patient/delete
+
+# /treatment/create
+# /treatment/edit
+# /treatment/delete

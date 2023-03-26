@@ -3,6 +3,11 @@ import click
 
 from flask import current_app, g
 
+def get_db_connection():
+    conn = sqlite3.connect('database.db')
+    conn.row_factory = sqlite3.Row
+    return conn
+
 def get_db():
     if 'db' not in g:
         g.db = sqlite3.connect(

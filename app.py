@@ -16,6 +16,9 @@ def get_db_connection():
     return conn
 
 def get_user_role():
+    if 'user_id' not in session:
+        return None
+
     conn = get_db_connection()
     user_id = session['user_id']
     user = conn.execute('SELECT * FROM users WHERE id = ?',
@@ -87,6 +90,9 @@ def edit_doctor(id):
     return render_template('edit-doctor.html', doctor=doctor)
 
 def is_authorized(needed_roles, role):
+    if role is None:
+        return False
+
     if role in needed_roles:
         return True
     

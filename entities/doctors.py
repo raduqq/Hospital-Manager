@@ -23,17 +23,6 @@ def get_doctor_by_id(id):
 
     return doctor
 
-def get_doctor_by_name(name):
-    conn = get_db_connection()
-    doctor = conn.execute('SELECT * FROM doctors WHERE name = ?',
-                        (name,)).fetchone()
-    conn.close()
-
-    if doctor is None:
-        abort(404)
-
-    return doctor
-
 @bp.route('/create/', methods=('GET', 'POST'))
 def create():
     if request.method == 'POST':

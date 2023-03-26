@@ -1,15 +1,15 @@
 from flask import Blueprint, request, flash, render_template, abort, redirect, url_for
 
 from database.db_helpers import get_db_connection
-from entities.doctors import get_doctors, get_doctor_by_name
+from entities.doctors import get_doctors
 from utils.helpers import *
 
 bp = Blueprint('assistants', __name__, url_prefix='/assistants')
 
-def get_assistant(assistant_id):
+def get_assistant_by_id(id):
     conn = get_db_connection()
     assistant = conn.execute('SELECT * FROM assistants WHERE id = ?',
-                        (assistant_id,)).fetchone()
+                        (id,)).fetchone()
     conn.close()
 
     if assistant is None:
@@ -21,19 +21,19 @@ def get_assistant(assistant_id):
 def create():
     if request.method == 'POST':
         name = request.form['name']
-        doctor_name = request.form['doctor']
+        doctor = request.form['doctor']
 
-        # todo get doctor by name si lvireaza-l mai jos
-        doctor = get_doctor_by_name(doctor_name)
-        doctor_id = doctor['id']
+        # todo get doctor by name si lvireaza-l mai jos DAR CEVA NU MERGE
+        # doctor = get_doctor_by_name(doctor_name)
+        # doctor_id = doctor['id']
 
         if not name:
             flash('Name is required')
         else:
             conn = get_db_connection()
             # todo replace pizda-matii
-            conn.execute('INSERT INTO assistants (name, doctorId) VALUES (?, ?)',
-                            (name, doctor_id))
+            conn.execute('INSERT INTO assistants (name) VALUES (?)',
+                            (name,))
             conn.commit()
             conn.close()
             return redirect(url_for('index'))
@@ -42,7 +42,7 @@ def create():
 
 @bp.route('/edit/<int:id>', methods=('GET', 'POST'))
 def edit(id):
-    assistant = get_assistant(id)
+    assistant = get_assistant_by_id(id)
 
     if request.method == 'POST':
         name = request.form['name']
@@ -65,7 +65,7 @@ def edit(id):
 @bp.route('/delete/<int:id>', methods=('GET', 'POST'))
 def delete(id):
     if is_authorized("manager", get_user_role()):
-        assistant = get_assistant(id)
+        assistant = get_assistant_by_id(id)
         conn = get_db_connection()
         conn.execute('DELETE FROM assistants WHERE id = ?', (id,))
         conn.commit()

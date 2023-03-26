@@ -1,6 +1,6 @@
 from flask import abort
-from auth import session
-from database import get_db_connection
+from utils.auth import session
+from database.db_helpers import get_db_connection
 
 def get_user_role():
     if 'user_id' not in session:

@@ -1,7 +1,7 @@
 from flask import Blueprint, request, flash, render_template, abort, redirect, url_for
 
-from database import get_db_connection
-from helpers import *
+from database.db_helpers import get_db_connection
+from utils.helpers import *
 
 bp = Blueprint('doctors', __name__, url_prefix='/doctors')
 

@@ -3,18 +3,18 @@ from flask import Blueprint, request, flash, render_template, abort, redirect, u
 from database.db_helpers import get_db_connection
 from utils.helpers import *
 
-bp = Blueprint('doctors', __name__, url_prefix='/doctors')
+bp = Blueprint('assistants', __name__, url_prefix='/assistants')
 
-def get_doctor(doctor_id):
+def get_assistant(assistant_id):
     conn = get_db_connection()
-    doctor = conn.execute('SELECT * FROM doctors WHERE id = ?',
-                        (doctor_id,)).fetchone()
+    assistant = conn.execute('SELECT * FROM assistants WHERE id = ?',
+                        (assistant_id,)).fetchone()
     conn.close()
 
-    if doctor is None:
+    if assistant is None:
         abort(404)
 
-    return doctor
+    return assistant
 
 @bp.route('/create/', methods=('GET', 'POST'))
 def create():
@@ -26,17 +26,17 @@ def create():
             flash('Name is required')
         else:
             conn = get_db_connection()
-            conn.execute('INSERT INTO doctors (name) VALUES (?)',
+            conn.execute('INSERT INTO assistants (name) VALUES (?)',
                             (name,))
             conn.commit()
             conn.close()
             return redirect(url_for('index'))
 
-    return render_template('doctors/create.html')
+    return render_template('assistants/create.html')
 
 @bp.route('/edit/<int:id>', methods=('GET', 'POST'))
 def edit(id):
-    doctor = get_doctor(id)
+    assistant = get_assistant(id)
 
     if request.method == 'POST':
         name = request.form['name']
@@ -47,24 +47,24 @@ def edit(id):
 
         else:
             conn = get_db_connection()
-            conn.execute('UPDATE doctors SET name = ?'
+            conn.execute('UPDATE assistants SET name = ?'
                          ' WHERE id = ?',
                          (name, id))
             conn.commit()
             conn.close()
             return redirect(url_for('index'))
 
-    return render_template('doctors/edit.html', doctor=doctor)
+    return render_template('assistants/edit.html', assistant=assistant)
 
 @bp.route('/delete/<int:id>', methods=('GET', 'POST'))
 def delete(id):
     if is_authorized("manager", get_user_role()):
-        doctor = get_doctor(id)
+        assistant = get_assistant(id)
         conn = get_db_connection()
-        conn.execute('DELETE FROM doctors WHERE id = ?', (id,))
+        conn.execute('DELETE FROM assistants WHERE id = ?', (id,))
         conn.commit()
         conn.close()
-        flash('{}" successfully deleted'.format(doctor['name']))
+        flash('{} successfully deleted'.format(assistant['name']))
     else:
         flash("Unauthorized access")
 

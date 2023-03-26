@@ -40,3 +40,7 @@ blueprints?
 https://flask.palletsprojects.com/en/2.2.x/tutorial/views/
 
 Login pages - https://www.w3schools.com/howto/howto_css_login_form.asp; https://www.w3schools.com/howto/howto_css_register_form.asp 
+
+daca nu merge deloc faza one to many in sqllite, mergem pe alchemy
+https://www.digitalocean.com/community/tutorials/how-to-use-one-to-many-database-relationships-with-flask-sqlalchemy
+https://flask-sqlalchemy.palletsprojects.com/en/2.x/models/

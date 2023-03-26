@@ -9,6 +9,15 @@
             placeholder="Assistant name"
             value="{{ request.form['name'] }}"></input>
         <br>
+        
+        <label for="doctor">Select doctor</label>
+		<select id="doctor" name="doctor">
+			{% for doctor in doctors %}
+			<option value="{{ doctor }}">{{ doctor['name'] }}</option>
+			{% endfor %}
+		</select>   
+        
+        <br>
         <button type="submit">Submit</button>
     </form>
 {% endblock %}

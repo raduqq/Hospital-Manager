@@ -1,6 +1,7 @@
 from flask import Blueprint, request, flash, render_template, abort, redirect, url_for
 
 from database.db_helpers import get_db_connection
+from entities.doctors import get_doctors, get_doctor_by_name
 from utils.helpers import *
 
 bp = Blueprint('assistants', __name__, url_prefix='/assistants')
@@ -20,19 +21,24 @@ def get_assistant(assistant_id):
 def create():
     if request.method == 'POST':
         name = request.form['name']
-        # dropdown cu asistenti
+        doctor_name = request.form['doctor']
+
+        # todo get doctor by name si lvireaza-l mai jos
+        doctor = get_doctor_by_name(doctor_name)
+        doctor_id = doctor['id']
 
         if not name:
             flash('Name is required')
         else:
             conn = get_db_connection()
-            conn.execute('INSERT INTO assistants (name) VALUES (?)',
-                            (name,))
+            # todo replace pizda-matii
+            conn.execute('INSERT INTO assistants (name, doctorId) VALUES (?, ?)',
+                            (name, doctor_id))
             conn.commit()
             conn.close()
             return redirect(url_for('index'))
 
-    return render_template('assistants/create.html')
+    return render_template('assistants/create.html', doctors=get_doctors())
 
 @bp.route('/edit/<int:id>', methods=('GET', 'POST'))
 def edit(id):
@@ -40,7 +46,7 @@ def edit(id):
 
     if request.method == 'POST':
         name = request.form['name']
-        # dropdown cu asistenti
+        # dropdown cu doctori
 
         if not name:
             flash('Name is required')

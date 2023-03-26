@@ -5,10 +5,28 @@ from utils.helpers import *
 
 bp = Blueprint('doctors', __name__, url_prefix='/doctors')
 
-def get_doctor(doctor_id):
+def get_doctors():
+    conn = get_db_connection()
+    doctors = conn.execute('SELECT * FROM doctors').fetchall()
+    conn.close()
+
+    return doctors
+
+def get_doctor_by_id(id):
     conn = get_db_connection()
     doctor = conn.execute('SELECT * FROM doctors WHERE id = ?',
-                        (doctor_id,)).fetchone()
+                        (id,)).fetchone()
+    conn.close()
+
+    if doctor is None:
+        abort(404)
+
+    return doctor
+
+def get_doctor_by_name(name):
+    conn = get_db_connection()
+    doctor = conn.execute('SELECT * FROM doctors WHERE name = ?',
+                        (name,)).fetchone()
     conn.close()
 
     if doctor is None:
@@ -20,7 +38,6 @@ def get_doctor(doctor_id):
 def create():
     if request.method == 'POST':
         name = request.form['name']
-        # dropdown cu asistenti
 
         if not name:
             flash('Name is required')
@@ -36,7 +53,7 @@ def create():
 
 @bp.route('/edit/<int:id>', methods=('GET', 'POST'))
 def edit(id):
-    doctor = get_doctor(id)
+    doctor = get_doctor_by_id(id)
 
     if request.method == 'POST':
         name = request.form['name']
@@ -59,7 +76,7 @@ def edit(id):
 @bp.route('/delete/<int:id>', methods=('GET', 'POST'))
 def delete(id):
     if is_authorized("manager", get_user_role()):
-        doctor = get_doctor(id)
+        doctor = get_doctor_by_id(id)
         conn = get_db_connection()
         conn.execute('DELETE FROM doctors WHERE id = ?', (id,))
         conn.commit()

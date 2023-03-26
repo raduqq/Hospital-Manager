@@ -47,7 +47,6 @@ def index():
     conn.close()
     return render_template('index.html', doctors=doctors)
 
-# /doctor/create
 @app.route('/doctors/create/', methods=('GET', 'POST'))
 def create_doctor():
     if request.method == 'POST':
@@ -55,7 +54,7 @@ def create_doctor():
         # dropdown cu asistenti
 
         if not name:
-            flash('Name is required!')
+            flash('Name is required')
         else:
             conn = get_db_connection()
             conn.execute('INSERT INTO doctors (name) VALUES (?)',
@@ -64,9 +63,8 @@ def create_doctor():
             conn.close()
             return redirect(url_for('index'))
 
-    return render_template('create-doctor.html')
+    return render_template('doctor/create.html')
 
-# /doctor/edit
 @app.route('/doctors/edit/<int:id>', methods=('GET', 'POST'))
 def edit_doctor(id):
     doctor = get_doctor(id)
@@ -76,7 +74,7 @@ def edit_doctor(id):
         # dropdown cu asistenti
 
         if not name:
-            flash('Name is required!')
+            flash('Name is required')
 
         else:
             conn = get_db_connection()
@@ -87,7 +85,7 @@ def edit_doctor(id):
             conn.close()
             return redirect(url_for('index'))
 
-    return render_template('edit-doctor.html', doctor=doctor)
+    return render_template('doctor/edit.html', doctor=doctor)
 
 def is_authorized(needed_roles, role):
     if role is None:
@@ -98,7 +96,6 @@ def is_authorized(needed_roles, role):
     
     return False
 
-# /doctor/delete
 @app.route('/doctors/delete/<int:id>', methods=('GET', 'POST'))
 def delete_doctor(id):
     if is_authorized("manager", get_user_role()):
@@ -107,9 +104,9 @@ def delete_doctor(id):
         conn.execute('DELETE FROM doctors WHERE id = ?', (id,))
         conn.commit()
         conn.close()
-        flash('"{}" was successfully deleted!'.format(doctor['name']))
+        flash('"{}" successfully deleted'.format(doctor['name']))
     else:
-        flash("N-ai dreptu, ba")
+        flash("Unauthorized access")
 
     return redirect(url_for('index'))
 

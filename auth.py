@@ -17,9 +17,9 @@ def register():
         error = None
 
         if not username:
-            error = 'Username is required.'
+            error = 'Username is required'
         elif not password:
-            error = 'Password is required.'
+            error = 'Password is required'
         
         # get role
         role = ""
@@ -31,7 +31,7 @@ def register():
         elif "ast" in username:
             role = "assistant"
         else:
-            error = 'No assignable role available.'
+            error = 'No assignable role available'
 
         if error is None:
             try:
@@ -42,7 +42,7 @@ def register():
                 )
                 db.commit()
             except db.IntegrityError:
-                error = f"User {username} is already registered."
+                error = f"User {username} is already registered"
             else:
                 return redirect(url_for("auth.login"))
 
@@ -62,9 +62,9 @@ def login():
         ).fetchone()
 
         if user is None:
-            error = 'Incorrect username.'
+            error = 'Incorrect username'
         elif not check_password_hash(user['password'], password):
-            error = 'Incorrect password.'
+            error = 'Incorrect password'
 
         if error is None:
             session.clear()

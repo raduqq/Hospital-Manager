@@ -1,12 +1,16 @@
-<form method="POST" action="/auth/login">  
-  <h1>Login</h1>
-  <hr>
+{% extends "base.html" %}
 
-  <label for="username"><b>Username</b></label>
-  <input type="text" placeholder="Enter Username" name="username" required>
+{% block body %}
+  <form method="POST" action="/auth/login">  
+    <h1>Login</h1>
+    <hr>
 
-  <label for="password"><b>Password</b></label>
-  <input type="password" placeholder="Enter Password" name="password" required>
+    <label for="username"><b>Username</b></label>
+    <input type="text" placeholder="Enter Username" name="username" required>
 
-  <button type="submit">Login</button>
-</form>
+    <label for="password"><b>Password</b></label>
+    <input type="password" placeholder="Enter Password" name="password" required>
+
+    <button type="submit">Login</button>
+  </form>
+{% endblock %}

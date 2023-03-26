@@ -14,7 +14,7 @@ CREATE TABLE posts (
 
 CREATE TABLE users (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    username VARCHAR(255) NOT NULL,
+    username VARCHAR(255) NOT NULL UNIQUE,
     password VARCHAR(255) NOT NULL,
     role VARCHAR(255) NOT NULL
 );
@@ -22,7 +22,6 @@ CREATE TABLE users (
 CREATE TABLE doctors (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     name VARCHAR(255) NOT NULL
-    -- asssistant Id: daca cumva e 1-1 intre doctor-assistant
 );
 
 CREATE TABLE assistants (

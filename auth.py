@@ -26,14 +26,12 @@ def register():
                 # get role
                 role = ""
 
-                if "manager" in username:
+                if "mgr" in username:
                     role = "manager"
-                elif "doctor" in username:
+                elif "doc" in username:
                     role = "doctor"
-                elif "assistant" in username:
+                elif "ast" in username:
                     role = "assistant"
-                elif "patient" in username:
-                    role = "patient"
                 else:
                     error = 'No assignable role available.'
 

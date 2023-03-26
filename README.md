@@ -9,6 +9,7 @@ flask?
 * Installs:
 - flask - pip install flask
 - login - pip install flask-login
+* DB Setup - python init_db.py
 
 // ceva cu requirements.txt ca sa nu incarci venv pe repo - https://stackoverflow.com/questions/6590688/is-it-bad-to-have-my-virtualenv-directory-inside-my-git-repository
 
@@ -37,3 +38,5 @@ Login
 blueprints?
 
 https://flask.palletsprojects.com/en/2.2.x/tutorial/views/
+
+Login pages - https://www.w3schools.com/howto/howto_css_login_form.asp; https://www.w3schools.com/howto/howto_css_register_form.asp 

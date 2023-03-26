@@ -4,6 +4,7 @@ from flask import Flask, render_template, request, url_for, flash, redirect, abo
     
 app = Flask(__name__)
 app.config['SECRET_KEY'] = urandom(24).hex()
+app.config['DATABASE'] = "database.db"
 
 import auth
 app.register_blueprint(auth.bp)

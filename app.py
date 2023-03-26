@@ -1,7 +1,8 @@
 import sqlite3
 from os import urandom
 from flask import Flask, render_template, request, url_for, flash, redirect, abort
-    
+from auth import session
+
 app = Flask(__name__)
 app.config['SECRET_KEY'] = urandom(24).hex()
 app.config['DATABASE'] = "database.db"
@@ -13,6 +14,17 @@ def get_db_connection():
     conn = sqlite3.connect('database.db')
     conn.row_factory = sqlite3.Row
     return conn
+
+def get_user_role():
+    conn = get_db_connection()
+    user_id = session['user_id']
+    user = conn.execute('SELECT * FROM users WHERE id = ?',
+                            (user_id,)).fetchone()
+    
+    if user is None:
+        abort(404)
+
+    return user['role']
 
 def get_doctor(doctor_id):
     conn = get_db_connection()
@@ -74,15 +86,25 @@ def edit_doctor(id):
 
     return render_template('edit-doctor.html', doctor=doctor)
 
+def is_authorized(needed_roles, role):
+    if role in needed_roles:
+        return True
+    
+    return False
+
 # /doctor/delete
 @app.route('/doctors/delete/<int:id>', methods=('GET', 'POST'))
 def delete_doctor(id):
-    doctor = get_doctor(id)
-    conn = get_db_connection()
-    conn.execute('DELETE FROM doctors WHERE id = ?', (id,))
-    conn.commit()
-    conn.close()
-    flash('"{}" was successfully deleted!'.format(doctor['name']))
+    if is_authorized("manager", get_user_role()):
+        doctor = get_doctor(id)
+        conn = get_db_connection()
+        conn.execute('DELETE FROM doctors WHERE id = ?', (id,))
+        conn.commit()
+        conn.close()
+        flash('"{}" was successfully deleted!'.format(doctor['name']))
+    else:
+        flash("N-ai dreptu, ba")
+
     return redirect(url_for('index'))
 
 # /assistant/create

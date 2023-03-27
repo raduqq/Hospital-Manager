@@ -1,46 +1,48 @@
-Setup
+# Setup
+## Virtual Environment
+* Install - `sudo apt install python3-venv`
+* Create - `python -m venv venv`
+* Activate - `source venv/bin/activate`
+## Dependencies
+* `pip install -r requirements.txt`
+##  Database
+* From the `database` folder, run `python init_db.py`
+## Flask
+* `export FLASK_APP=app`
+## Run, Flask, Run!
+* `flask run`
 
-venv?
-flask?
+# General Approach
+* Planned the whole data model first
+* Searched the Internet how to setup a database in Flask (knew beforehand that Flask was the most popular and/or accessible Python framework) and a login mechanism (as I had no idea how to do it)
+* Fetched code from the Internet
+* Tried to understand what I should use for my own purpose
+* Had a lot of fun
+# Endpoints
+A user has all APIs exposed (i.e. has all the buttons which trigger the APIs exposed in FE), but access is role-based and corresponding feedback is shown when unauthorized.
 
-* Install venv - sudo apt install python3-venv
-* Create venv - python3 -m venv venv
-* Activate venv - source venv/bin/activate
-* Installs:
-- flask - pip install flask
-- login - pip install flask-login
-* DB Setup - python init_db.py
+# Vulnerabilities
+* Not hiding API-triggering buttons for non-authorized users
+* There must be something wrong with that `secret_key` from `app.py`. It's "secret" after all, and I didn't do pretty much anything to "protect", only randomized it.
 
-// ceva cu requirements.txt ca sa nu incarci venv pe repo - https://stackoverflow.com/questions/6590688/is-it-bad-to-have-my-virtualenv-directory-inside-my-git-repository
+# Missing Required Features
+* "A report with all the treatments applied to a Patient (JSON) (accessed by the General manager or Doctor)"
+* "Minimal test coverage for unit and integration test"
+  * Found the `unittest` library, but I didn't have time to set it up and write a few basic CRUD tests.
+* "Include migration and fixture files"
+  * Used SQLite for the Database. Searched the Internet how to generate such files, but nothing quick or useful came up.
+  * Very few changes occured, anyway. Renaming an attribute or two for one or two entities. (recommendedTreatmentId @patient -> treatment_id)
 
-* Setup flask run - export FLASK_APP=app
-* // Debug mode - export FLASK_DEBUG=1
+# If I had more time...
+* OpenAPI documentation
+  * Searched Google for "Python API documentation generator". `Sphinx` came up. Not sure if it generates OpenAPI docs, but I sure would've tried
+* Modularized the code better (the create & edit.html and the entities' .py really repeat themselves)
+  * I think this implied modularizing the routes/blueprints somehow, but I didn't figure out how
+* More beautiful FE
+* Used SQLalchemy instead of SQLite as I see it abstractizes/encapsulates the whole DB manipulation better 
+  * With SQLite, I dusted off my SQL knowledge. Grateful for that
+  * However, on a bigger project I probably would've used SQLalchemy
+* Implemented roles better. Right now, they're just a lof of "ifs". Nothing too smart
 
-* Run flask app - flask run
-
-
-
-Database
-
-sqllite?
-templates? "{%}"
-secret key? clar o vulnerabilitate
-
-* SQLlite - https://www.digitalocean.com/community/tutorials/how-to-use-an-sqlite-database-in-a-flask-application
-
-
-Flask
-
-web form?
-
-Login
-
-blueprints?
-
-https://flask.palletsprojects.com/en/2.2.x/tutorial/views/
-
-Login pages - https://www.w3schools.com/howto/howto_css_login_form.asp; https://www.w3schools.com/howto/howto_css_register_form.asp 
-
-daca nu merge deloc faza one to many in sqllite, mergem pe alchemy
-https://www.digitalocean.com/community/tutorials/how-to-use-one-to-many-database-relationships-with-flask-sqlalchemy
-https://flask-sqlalchemy.palletsprojects.com/en/2.x/models/
+# Feedback
+Both fun and challenging in a good way for an entry-level Python challenger. Thank you! It has been a great learning experience. 

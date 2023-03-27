@@ -28,22 +28,22 @@ CREATE TABLE assistants (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     name VARCHAR(255) NOT NULL,
     -- one doctor, many assistants
-    doctorId INTEGER,
-    FOREIGN KEY(doctorId) REFERENCES doctor(id)
+    doctor_id INTEGER,
+    FOREIGN KEY(doctor_id) REFERENCES doctor(id)
 );
 
 CREATE TABLE patients (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     health INTEGER NOT NULL DEFAULT 100,
-    assistantId INTEGER,
-    recommendedTreatmentId INTEGER,
+    assistant_id INTEGER,
+    recommended_treatment_id INTEGER,
     -- one asisstant, many patients
-    FOREIGN KEY(assistantId) REFERENCES assistant(id),
+    FOREIGN KEY(assistant_id) REFERENCES assistant(id),
     -- one treatment, many patients 
-    FOREIGN KEY(recommendedTreatmentId) REFERENCES treatment(id)
+    FOREIGN KEY(recommended_treatment_id) REFERENCES treatment(id)
 );
 
 CREATE TABLE treatments (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    healthValue INTEGER NOT NULL
+    health_value INTEGER NOT NULL
 );

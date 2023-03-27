@@ -67,8 +67,6 @@ def login():
         if error is None:
             session.clear()
             session['user_id'] = user['id']
-
-            print(session)
             
             return redirect(url_for('index'))
 

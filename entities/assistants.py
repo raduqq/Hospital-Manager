@@ -21,19 +21,16 @@ def get_assistant_by_id(id):
 def create():
     if request.method == 'POST':
         name = request.form['name']
-        doctor = request.form['doctor']
-
-        # todo get doctor by name si lvireaza-l mai jos DAR CEVA NU MERGE
-        # doctor = get_doctor_by_name(doctor_name)
-        # doctor_id = doctor['id']
+        doctor_id = request.form['doctor_id']
 
         if not name:
             flash('Name is required')
+        elif not doctor_id:
+            flash('Doctor is required')
         else:
             conn = get_db_connection()
-            # todo replace pizda-matii
-            conn.execute('INSERT INTO assistants (name) VALUES (?)',
-                            (name,))
+            conn.execute('INSERT INTO assistants (name, doctor_id) VALUES (?, ?)',
+                            (name, doctor_id))
             conn.commit()
             conn.close()
             return redirect(url_for('index'))
@@ -46,21 +43,22 @@ def edit(id):
 
     if request.method == 'POST':
         name = request.form['name']
-        # dropdown cu doctori
+        doctor_id = request.form['doctor_id']
 
         if not name:
             flash('Name is required')
-
+        elif not doctor_id:
+            flash('Doctor is required')
         else:
             conn = get_db_connection()
-            conn.execute('UPDATE assistants SET name = ?'
+            conn.execute('UPDATE assistants SET name = ?, doctor_id = ?'
                          ' WHERE id = ?',
-                         (name, id))
+                         (name, doctor_id, id))
             conn.commit()
             conn.close()
             return redirect(url_for('index'))
 
-    return render_template('assistants/edit.html', assistant=assistant)
+    return render_template('assistants/edit.html', assistant=assistant, doctors=get_doctors())
 
 @bp.route('/delete/<int:id>', methods=('GET', 'POST'))
 def delete(id):

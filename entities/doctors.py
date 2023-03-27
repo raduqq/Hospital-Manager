@@ -28,54 +28,58 @@ def get_doctor_by_id(id):
 
 @bp.route('/create/', methods=('GET', 'POST'))
 def create():
-    if request.method == 'POST':
-        name = request.form['name']
+    if is_authorized(doc_mgm_roles, get_user_role()):
+        if request.method == 'POST':
+            name = request.form['name']
 
-        if not name:
-            flash('Name is required')
-        else:
-            conn = get_db_connection()
-            conn.execute('INSERT INTO doctors (name) VALUES (?)',
-                         (name,))
-            conn.commit()
-            conn.close()
-            return redirect(url_for('index'))
+            if not name:
+                flash('Name is required')
+            else:
+                conn = get_db_connection()
+                conn.execute('INSERT INTO doctors (name) VALUES (?)',
+                             (name,))
+                conn.commit()
+                conn.close()
+                return redirect(url_for('index'))
 
-    return render_template('doctors/create.html')
+        return render_template('doctors/create.html')
+
+    return handle_unauth_access()
 
 
 @bp.route('/edit/<int:id>', methods=('GET', 'POST'))
 def edit(id):
-    doctor = get_doctor_by_id(id)
+    if is_authorized(doc_mgm_roles, get_user_role()):
+        doctor = get_doctor_by_id(id)
 
-    if request.method == 'POST':
-        name = request.form['name']
+        if request.method == 'POST':
+            name = request.form['name']
 
-        if not name:
-            flash('Name is required')
+            if not name:
+                flash('Name is required')
 
-        else:
-            conn = get_db_connection()
-            conn.execute('UPDATE doctors SET name = ?'
-                         ' WHERE id = ?',
-                         (name, id))
-            conn.commit()
-            conn.close()
-            return redirect(url_for('index'))
+            else:
+                conn = get_db_connection()
+                conn.execute('UPDATE doctors SET name = ?'
+                             ' WHERE id = ?',
+                             (name, id))
+                conn.commit()
+                conn.close()
+                return redirect(url_for('index'))
 
-    return render_template('doctors/edit.html', doctor=doctor)
+        return render_template('doctors/edit.html', doctor=doctor)
+
+    return handle_unauth_access()
 
 
 @bp.route('/delete/<int:id>', methods=('GET', 'POST'))
 def delete(id):
-    if is_authorized("manager", get_user_role()):
+    if is_authorized(doc_mgm_roles, get_user_role()):
         doctor = get_doctor_by_id(id)
         conn = get_db_connection()
         conn.execute('DELETE FROM doctors WHERE id = ?', (id,))
         conn.commit()
         conn.close()
         flash('{}" successfully deleted'.format(doctor['name']))
-    else:
-        flash("Unauthorized access")
 
-    return redirect(url_for('index'))
+    return handle_unauth_access()

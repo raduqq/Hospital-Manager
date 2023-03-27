@@ -1,6 +1,22 @@
-from flask import abort
+from flask import abort, flash, redirect, url_for
 from utils.auth import session
 from database.db_helpers import get_db_connection
+
+mgr = "manager"
+doc = "doctor"
+ast = "assistant"
+
+doc_mgm_roles = [mgr]
+pat_mgm_roles = [mgr, doc]
+ast_mgm_roles = [mgr]
+trt_mgm_roles = [mgr, doc]
+
+unauth_error_msg = "Unauthorized access"
+
+
+def handle_unauth_access():
+    flash(unauth_error_msg)
+    return redirect(url_for('index'))
 
 
 def get_user_role():

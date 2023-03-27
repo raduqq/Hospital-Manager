@@ -83,20 +83,28 @@ def apply_treatment(patient_id):
         patient = get_patient_by_id(patient_id)
 
         treatment = get_treatment_by_id(patient['treatment_id'])
-        new_patient_health = patient['health'] + treatment['health_value']
-        
-        # TODO
+        max_health = 100
+        new_patient_health = max(
+            patient['health'] + treatment['health_value'], max_health)
+
         print(type(new_patient_health))
 
         conn = get_db_connection()
         conn.execute('UPDATE patients SET health = ?'
                      ' WHERE id = ?',
-                     (new_patient_health, id))
+                     (new_patient_health, patient_id))
         conn.commit()
         conn.close()
 
-        flash('Treatment {} successfully applied to patient {}'.format(
-            treatment['name'], patient['name']))
+        flash_msg = "Treatment " + \
+            treatment['name'] + \
+            " successfully applied to patient " + \
+            patient['name']
+
+        if (new_patient_health == 100):
+            flash_msg += ". Patient is now fully healthy."
+
+        flash(flash_msg)
         return redirect(url_for('index'))
 
     return handle_unauth_access()

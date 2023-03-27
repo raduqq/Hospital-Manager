@@ -22,8 +22,6 @@ def create():
                 flash('Name is required')
             elif not assistant_id:
                 flash('Assistant is required')
-            elif not treatment_id:
-                flash('Treatment is required')
             else:
                 conn = get_db_connection()
                 conn.execute('INSERT INTO patients (name, assistant_id, treatment_id) VALUES (?, ?, ?)',
@@ -55,9 +53,17 @@ def edit(id):
                 flash('Treatment is required')
             else:
                 conn = get_db_connection()
-                conn.execute('UPDATE patients SET name = ?, assistant_id = ?, treatment_id = ?'
-                             ' WHERE id = ?',
-                             (name, assistant_id, treatment_id, id))
+
+                if (get_user_role() is "doctor"):
+                    conn.execute('UPDATE patients SET name = ?, assistant_id = ?, treatment_id = ?'
+                                 ' WHERE id = ?',
+                                 (name, assistant_id, treatment_id, id))
+                else:
+                    conn.execute('UPDATE patients SET name = ?, assistant_id = ?'
+                                 ' WHERE id = ?',
+                                 (name, assistant_id, id))
+                    flash("Treatment has not been modified, as only doctors can attribute it")
+
                 conn.commit()
                 conn.close()
                 return redirect(url_for('index'))

@@ -8,6 +8,7 @@ import entities.doctors as doctors
 import entities.assistants as assistants
 import entities.patients as patients
 import entities.treatments as treatments
+import utils.reports as reports
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = urandom(24).hex()
@@ -18,6 +19,7 @@ app.register_blueprint(doctors.bp)
 app.register_blueprint(assistants.bp)
 app.register_blueprint(patients.bp)
 app.register_blueprint(treatments.bp)
+app.register_blueprint(reports.bp)
 
 @app.route('/')
 def index():

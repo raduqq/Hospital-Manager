@@ -6,16 +6,26 @@ from utils.helpers import *
 
 bp = Blueprint('assistants', __name__, url_prefix='/assistants')
 
+
+def get_assistants():
+    conn = get_db_connection()
+    assistants = conn.execute('SELECT * FROM assistants').fetchall()
+    conn.close()
+
+    return assistants
+
+
 def get_assistant_by_id(id):
     conn = get_db_connection()
     assistant = conn.execute('SELECT * FROM assistants WHERE id = ?',
-                        (id,)).fetchone()
+                             (id,)).fetchone()
     conn.close()
 
     if assistant is None:
         abort(404)
 
     return assistant
+
 
 @bp.route('/create/', methods=('GET', 'POST'))
 def create():
@@ -30,12 +40,13 @@ def create():
         else:
             conn = get_db_connection()
             conn.execute('INSERT INTO assistants (name, doctor_id) VALUES (?, ?)',
-                            (name, doctor_id))
+                         (name, doctor_id))
             conn.commit()
             conn.close()
             return redirect(url_for('index'))
 
     return render_template('assistants/create.html', doctors=get_doctors())
+
 
 @bp.route('/edit/<int:id>', methods=('GET', 'POST'))
 def edit(id):
@@ -59,6 +70,7 @@ def edit(id):
             return redirect(url_for('index'))
 
     return render_template('assistants/edit.html', assistant=assistant, doctors=get_doctors())
+
 
 @bp.route('/delete/<int:id>', methods=('GET', 'POST'))
 def delete(id):

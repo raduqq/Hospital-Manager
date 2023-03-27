@@ -3,8 +3,11 @@ from flask import Flask, render_template
 
 from database.db_helpers import get_db_connection
 import utils.auth as auth
+
 import entities.doctors as doctors
 import entities.assistants as assistants
+import entities.patients as patients
+import entities.treatments as treatments
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = urandom(24).hex()
@@ -13,6 +16,9 @@ app.config['DATABASE'] = "database/database.db"
 app.register_blueprint(auth.bp)
 app.register_blueprint(doctors.bp)
 app.register_blueprint(assistants.bp)
+app.register_blueprint(patients.bp)
+app.register_blueprint(treatments.bp)
+
 
 @app.route('/')
 def index():

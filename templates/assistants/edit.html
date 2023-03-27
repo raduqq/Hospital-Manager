@@ -1,23 +1,19 @@
-{% extends "base.html" %}
+{% extends "base.html" %} {% block body %}
+<h1>Edit Assistant {{ assistant['name'] }}</h1>
+<form method="post">
+    <label for="name">Name</label>
+    <br />
+    <input type="text" name="name" placeholder="Assistant name" value="{{ assistant['name'] }}" />
+    <br />
 
-{% block body %}
-    <h1>Edit Assistant {{ assistant['name'] }}</h1>
-    <form method="post">
-        <label for="name">Name</label>
-        <br>
-        <input type="text" name="name"
-            placeholder="Assistant name"
-            value="{{ assistant['name'] }}"></input>
-        <br>
+    <label for="doctor_id">Select doctor</label>
+    <select id="doctor_id" name="doctor_id">
+        {% for doctor in doctors %}
+        <option value="{{ doctor['id'] }}">{{ doctor['name'] }}</option>
+        {% endfor %}
+    </select>
 
-        <label for="doctor_id">Select doctor</label>
-		<select id="doctor_id" name="doctor_id">
-			{% for doctor in doctors %}
-			<option value="{{ doctor['id'] }}">{{ doctor['name'] }}</option>
-			{% endfor %}
-		</select>   
-        
-        <br>
-        <button type="submit">Submit</button>
-    </form>
+    <br />
+    <button type="submit">Submit</button>
+</form>
 {% endblock %}

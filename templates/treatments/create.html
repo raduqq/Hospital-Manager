@@ -1,0 +1,16 @@
+{% extends "base.html" %} {% block body %}
+<h1>Add a New Treatment</h1>
+<form method="post">
+    <label for="name">Name</label>
+    <br />
+    <input type="text" name="name" placeholder="Treatment name" value="{{ request.form['name'] }}" />
+    <br />
+
+    <label for="health_value">Health value</label>
+    <br />
+    <input type="number" name="health_value" placeholder="Treatment health value"
+        value="{{ request.form['health_value'] }}" />
+    <br />
+    <button type="submit">Submit</button>
+</form>
+{% endblock %}

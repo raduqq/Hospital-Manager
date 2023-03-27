@@ -1,16 +1,14 @@
-{% extends "base.html" %}
+{% extends "base.html" %} {% block body %}
+<form method="POST" action="/auth/register">
+  <h1>Register</h1>
+  <hr />
 
-{% block body %}
-  <form method="POST" action="/auth/register">
-    <h1>Register</h1>
-    <hr>
+  <label for="username"><b>Username</b></label>
+  <input type="text" placeholder="Enter Username" name="username" id="username" required />
 
-    <label for="username"><b>Username</b></label>
-    <input type="text" placeholder="Enter Username" name="username" id="username" required>
+  <label for="password"><b>Password</b></label>
+  <input type="password" placeholder="Enter Password" name="password" id="password" required />
 
-    <label for="password"><b>Password</b></label>
-    <input type="password" placeholder="Enter Password" name="password" id="password" required>
-    
-    <button type="submit" class="registerbtn">Register</button>    
-  </form>
+  <button type="submit" class="registerbtn">Register</button>
+</form>
 {% endblock %}

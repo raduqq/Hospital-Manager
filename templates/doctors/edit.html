@@ -1,14 +1,10 @@
-{% extends "base.html" %}
-
-{% block body %}
-    <h1>Edit Doctor {{ doctor['name'] }}</h1>
-    <form method="post">
-        <label for="name">Name</label>
-        <br>
-        <input type="text" name="name"
-            placeholder="Doctor name"
-            value="{{ doctor['name'] }}"></input>
-        <br>
-        <button type="submit">Submit</button>
-    </form>
+{% extends "base.html" %} {% block body %}
+<h1>Edit Doctor {{ doctor['name'] }}</h1>
+<form method="post">
+    <label for="name">Name</label>
+    <br />
+    <input type="text" name="name" placeholder="Doctor name" value="{{ doctor['name'] }}" />
+    <br />
+    <button type="submit">Submit</button>
+</form>
 {% endblock %}

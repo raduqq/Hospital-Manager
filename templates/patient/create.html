@@ -1,0 +1,27 @@
+{% extends "base.html" %} {% block body %}
+<h1>Add a New Patient</h1>
+<form method="post">
+    <label for="name">Name</label>
+    <br />
+    <input type="text" name="name" placeholder="Patient name" value="{{ request.form['name'] }}" />
+    <br />
+
+    <label for="assistant_id">Select assistant</label>
+    <select id="assistant_id" name="assistant_id">
+        {% for assistant in assistants %}
+        <option value="{{ assistant['id'] }}">{{ assistant['name'] }}</option>
+        {% endfor %}
+    </select>
+    <br />
+
+    <label for="treatment_id">Select treatment</label>
+    <select id="treatment_id" name="treatment_id">
+        {% for treatment in treatments %}
+        <option value="{{ treatment['id'] }}">{{ treatment['name'] }}</option>
+        {% endfor %}
+    </select>
+
+    <br />
+    <button type="submit">Submit</button>
+</form>
+{% endblock %}

@@ -1,8 +1,7 @@
 import sqlite3
 import click
 
-from flask import current_app, g
-
+from flask import abort, current_app, g
 
 def get_db_connection():
     conn = sqlite3.connect('database/database.db')
@@ -45,3 +44,71 @@ def close_db(e=None):
 
     if db is not None:
         db.close()
+
+
+def get_treatments():
+    conn = get_db_connection()
+    treatments = conn.execute('SELECT * FROM treatments').fetchall()
+    conn.close()
+
+    return treatments
+
+def get_treatment_by_id(id):
+    conn = get_db_connection()
+    treatment = conn.execute('SELECT * FROM treatments WHERE id = ?',
+                             (id,)).fetchone()
+    conn.close()
+
+    if treatment is None:
+        abort(404)
+
+    return treatment
+
+def get_doctor_by_id(id):
+    conn = get_db_connection()
+    doctor = conn.execute('SELECT * FROM doctors WHERE id = ?',
+                          (id,)).fetchone()
+    conn.close()
+
+    if doctor is None:
+        abort(404)
+
+    return doctor
+
+def get_doctors():
+    conn = get_db_connection()
+    doctors = conn.execute('SELECT * FROM doctors').fetchall()
+    conn.close()
+
+    return doctors
+
+def get_assistants():
+    conn = get_db_connection()
+    assistants = conn.execute('SELECT * FROM assistants').fetchall()
+    conn.close()
+
+    return assistants
+
+def get_assistant_by_id(id):
+    conn = get_db_connection()
+    assistant = conn.execute('SELECT * FROM assistants WHERE id = ?',
+                             (id,)).fetchone()
+    conn.close()
+
+    if assistant is None:
+        abort(404)
+
+    return assistant
+
+def get_patient_by_id(id):
+    conn = get_db_connection()
+    patient = conn.execute('SELECT * FROM patients WHERE id = ?',
+                           (id,)).fetchone()
+    conn.close()
+
+    if patient is None:
+        abort(404)
+
+    return patient
+
+

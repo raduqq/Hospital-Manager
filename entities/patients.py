@@ -1,23 +1,13 @@
-from flask import Blueprint, request, flash, render_template, abort, redirect, url_for
+from flask import Blueprint, request, flash, render_template, redirect, url_for
 
 from database.db_helpers import get_db_connection
-from entities.assistants import get_assistants
-from entities.treatments import get_treatments
-from utils.helpers import *
+from database.db_helpers import get_patient_by_id
+from utils.auth import get_user_role, handle_unauth_access, is_authorized, pat_mgm_roles
+
+from database.db_helpers import get_assistants
+from database.db_helpers import get_treatments
 
 bp = Blueprint('patients', __name__, url_prefix='/patients')
-
-
-def get_patient_by_id(id):
-    conn = get_db_connection()
-    patient = conn.execute('SELECT * FROM patients WHERE id = ?',
-                           (id,)).fetchone()
-    conn.close()
-
-    if patient is None:
-        abort(404)
-
-    return patient
 
 
 @bp.route('/create/', methods=('GET', 'POST'))
@@ -42,7 +32,7 @@ def create():
                 conn.close()
                 return redirect(url_for('index'))
 
-        return render_template('patients/create.html', assistants=get_assistants(), treatments=get_treatments())
+        return render_template('patients/create.html', assistants=get_assistants(), treatments=get_treatments(), role=get_user_role())
 
     return handle_unauth_access()
 
@@ -72,7 +62,7 @@ def edit(id):
                 conn.close()
                 return redirect(url_for('index'))
 
-        return render_template('patients/edit.html', patient=patient, assistants=get_assistants(), treatments=get_treatments())
+        return render_template('patients/edit.html', patient=patient, assistants=get_assistants(), treatments=get_treatments(), role=get_user_role())
 
     return handle_unauth_access()
 
@@ -85,6 +75,8 @@ def delete(id):
         conn.execute('DELETE FROM patients WHERE id = ?', (id,))
         conn.commit()
         conn.close()
+
         flash('{} successfully deleted'.format(patient['name']))
+        return redirect(url_for('index'))
 
     return handle_unauth_access()

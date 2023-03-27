@@ -1,11 +1,21 @@
 import functools
 
-from flask import Blueprint, flash, g, redirect, render_template, request, session, url_for
+from flask import Blueprint, abort, flash, g, redirect, render_template, request, session, url_for
 from werkzeug.security import check_password_hash, generate_password_hash
-from database.db_helpers import get_db
+from database.db_helpers import get_db, get_db_connection
+
+mgr = "manager"
+doc = "doctor"
+ast = "assistant"
+
+doc_mgm_roles = [mgr]
+pat_mgm_roles = [mgr, doc]
+ast_mgm_roles = [mgr]
+trt_mgm_roles = [mgr, doc]
+
+unauth_error_msg = "Unauthorized access"
 
 bp = Blueprint('auth', __name__, url_prefix='/auth')
-
 
 @bp.route('/register', methods=('GET', 'POST'))
 def register():
@@ -104,3 +114,32 @@ def login_required(view):
         return view(**kwargs)
 
     return wrapped_view
+
+def get_user_role():
+    if 'user_id' not in session:
+        return None
+
+    conn = get_db_connection()
+    user_id = session['user_id']
+    user = conn.execute('SELECT * FROM users WHERE id = ?',
+                        (user_id,)).fetchone()
+
+    if user is None:
+        abort(404)
+
+    return user['role']
+
+def is_authorized(needed_roles, role):
+    if role is None:
+        return False
+
+    if role in needed_roles:
+        return True
+
+    return False
+
+def handle_unauth_access():
+    flash(unauth_error_msg)
+    return redirect(url_for('index'))
+
+

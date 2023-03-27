@@ -14,6 +14,7 @@
     </select>
     <br />
 
+    {% if role == "doctor" %}
     <label for="treatment_id">Select treatment</label>
     <select id="treatment_id" name="treatment_id">
         {% for treatment in treatments %}
@@ -22,6 +23,8 @@
     </select>
 
     <br />
+    {% endif %}
+
     <button type="submit">Submit</button>
 </form>
 {% endblock %}

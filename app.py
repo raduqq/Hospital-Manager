@@ -19,7 +19,6 @@ app.register_blueprint(assistants.bp)
 app.register_blueprint(patients.bp)
 app.register_blueprint(treatments.bp)
 
-
 @app.route('/')
 def index():
     conn = get_db_connection()

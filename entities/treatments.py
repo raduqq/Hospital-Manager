@@ -1,29 +1,10 @@
-from flask import Blueprint, request, flash, render_template, abort, redirect, url_for
+from flask import Blueprint, request, flash, render_template, redirect, url_for
 
 from database.db_helpers import get_db_connection
-from utils.helpers import *
+from database.db_helpers import get_treatment_by_id
+from utils.auth import get_user_role, handle_unauth_access, is_authorized, trt_mgm_roles
 
 bp = Blueprint('treatments', __name__, url_prefix='/treatments')
-
-
-def get_treatments():
-    conn = get_db_connection()
-    treatments = conn.execute('SELECT * FROM treatments').fetchall()
-    conn.close()
-
-    return treatments
-
-
-def get_treatment_by_id(id):
-    conn = get_db_connection()
-    treatment = conn.execute('SELECT * FROM treatments WHERE id = ?',
-                             (id,)).fetchone()
-    conn.close()
-
-    if treatment is None:
-        abort(404)
-
-    return treatment
 
 
 @bp.route('/create/', methods=('GET', 'POST'))
@@ -40,13 +21,13 @@ def create():
             else:
                 conn = get_db_connection()
                 conn.execute('INSERT INTO treatments (name, health_value) VALUES (?, ?)',
-                            (name, health_value))
+                             (name, health_value))
                 conn.commit()
                 conn.close()
                 return redirect(url_for('index'))
 
         return render_template('treatments/create.html')
-    
+
     return handle_unauth_access()
 
 
@@ -66,14 +47,14 @@ def edit(id):
             else:
                 conn = get_db_connection()
                 conn.execute('UPDATE treatments SET name = ?, health_value = ?'
-                            ' WHERE id = ?',
-                            (name, health_value, id))
+                             ' WHERE id = ?',
+                             (name, health_value, id))
                 conn.commit()
                 conn.close()
                 return redirect(url_for('index'))
 
         return render_template('treatments/edit.html', treatment=treatment)
-    
+
     return handle_unauth_access()
 
 
@@ -85,6 +66,9 @@ def delete(id):
         conn.execute('DELETE FROM treatments WHERE id = ?', (id,))
         conn.commit()
         conn.close()
+
         flash('{}" successfully deleted'.format(treatment['name']))
+        return redirect(url_for('index'))
 
     return handle_unauth_access()
+

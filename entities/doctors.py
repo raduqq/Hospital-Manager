@@ -1,29 +1,10 @@
-from flask import Blueprint, request, flash, render_template, abort, redirect, url_for
+from flask import Blueprint, request, flash, render_template, redirect, url_for
 
 from database.db_helpers import get_db_connection
-from utils.helpers import *
+from database.db_helpers import get_doctor_by_id
+from utils.auth import get_user_role, handle_unauth_access, is_authorized, doc_mgm_roles
 
 bp = Blueprint('doctors', __name__, url_prefix='/doctors')
-
-
-def get_doctors():
-    conn = get_db_connection()
-    doctors = conn.execute('SELECT * FROM doctors').fetchall()
-    conn.close()
-
-    return doctors
-
-
-def get_doctor_by_id(id):
-    conn = get_db_connection()
-    doctor = conn.execute('SELECT * FROM doctors WHERE id = ?',
-                          (id,)).fetchone()
-    conn.close()
-
-    if doctor is None:
-        abort(404)
-
-    return doctor
 
 
 @bp.route('/create/', methods=('GET', 'POST'))
@@ -80,6 +61,8 @@ def delete(id):
         conn.execute('DELETE FROM doctors WHERE id = ?', (id,))
         conn.commit()
         conn.close()
-        flash('{}" successfully deleted'.format(doctor['name']))
+
+        flash('{} successfully deleted'.format(doctor['name']))
+        return redirect(url_for('index'))
 
     return handle_unauth_access()
